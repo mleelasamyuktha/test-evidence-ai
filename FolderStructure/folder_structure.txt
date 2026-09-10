@@ -1,0 +1,60 @@
+data-test-executor/
+│
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   │
+│   ├── executor/
+│   │   ├── __init__.py
+│   │   ├── test_executor.py
+│   │   ├── validation_catalog.py
+│   │   └── result_builder.py
+│   │
+│   ├── validators/
+│   │   ├── __init__.py
+│   │   ├── file_validator.py
+│   │   ├── table_validator.py
+│   │   ├── query_assertion_validator.py
+│   │   ├── query_comparison_validator.py
+│   │   └── performance_validator.py
+│   │
+│   ├── connectors/
+│   │   ├── __init__.py
+│   │   ├── sql_connector.py
+│   │   └── file_connector.py
+│   │
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── test_case.py
+│   │   └── test_result.py
+│   │
+│   └── utils/
+│       ├── __init__.py
+│       ├── logger.py
+│       └── helpers.py
+│
+├── config/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── validation_config.py
+│   └── environments/
+│       ├── local.json
+│       └── azure.json
+│
+├── tests/
+│   ├── __init__.py
+│   ├── test_table_validator.py
+│   ├── test_file_validator.py
+│   └── test_query_comparison.py
+│
+├── sample_input/
+│   └── sample_testcases.json
+│
+├── output/
+│   └── results.json
+│
+├── .env
+├── .env.example
+├── .gitignore
+├── requirements.txt
+└── README.md
