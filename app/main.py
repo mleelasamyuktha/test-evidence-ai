@@ -1,11 +1,10 @@
-import json
 from datetime import datetime
-from pathlib import Path
+
 from models.test_case import TestCase
 from app.executor import TestExecutor
 from app.result_builder import ResultBuilder
+from app.llm_output_reader import LLMOutputReader
 from utilitycode.logger import get_logger
-from config.variables import llm_output_dir
 
 
 logger = get_logger(__name__)
@@ -13,15 +12,20 @@ logger = get_logger(__name__)
 
 def main():
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
     logger.info("TestEvidence AI execution started")
 
-    # 2. Create executor
+    # Create Azure LLM output reader
+    reader = LLMOutputReader()
+
+    # Create executor
     executor = TestExecutor()
 
-    json_files = sorted(Path(llm_output_dir).glob("*.json"))
+    # Get JSON files from Azure LLMOutput folder
+    json_files = reader.get_json_files()
 
     logger.info(
-        "Found %d story files in LLM output directory",
+        "Found %d story files in Azure LLM output",
         len(json_files)
     )
 
@@ -32,19 +36,19 @@ def main():
             json_file
         )
 
-        # 1. Read test cases
-        with open(json_file, "r") as file:
-            data = json.load(file)
-            story_id = data.get("StoryID")
+        # Read test scenarios from Azure
+        data = reader.read_test_scenarios(json_file)
 
-            logger.info(
-                "Processing story | story_id=%s",
-                story_id
-            )
+        story_id = data.get("StoryID")
+
+        logger.info(
+            "Processing story | story_id=%s",
+            story_id
+        )
 
         results = []
 
-        # 3. Execute each test case
+        # Execute each test case
         for test_case_data in data["TestCases"]:
 
             test_case = TestCase(
@@ -55,7 +59,7 @@ def main():
                 validation_input=test_case_data["ValidationInput"]
             )
 
-            # 4. Execute test
+            # Execute test
             result = executor.execute(test_case)
 
             results.append({
@@ -69,14 +73,24 @@ def main():
             })
 
         # Build consolidated report
-        report = ResultBuilder.build_report(results=results,story_id=data.get("StoryID"))
+        report = ResultBuilder.build_report(
+            results=results,
+            story_id=story_id
+        )
 
         # Save report
-        report_file = ResultBuilder.save_report(report, name=json_file.stem, timestamp=timestamp)
+        report_file = ResultBuilder.save_report(
+            report,
+            name=json_file.split("/")[-1].rsplit(".", 1)[0],
+            timestamp=timestamp
+        )
 
-        logger.info("Consolidated report generated | file=%s",report_file)
+        logger.info(
+            "Consolidated report generated | file=%s",
+            report_file
+        )
 
-        logger.info("TestEvidence AI execution completed")
+    logger.info("TestEvidence AI execution completed")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 # validation_catalog.py
 
 from validation_code.validators.file_validator import FileValidator
+from validation_code.validators.table_validator import TableValidator
 
 
 VALIDATION_CATALOG = {
@@ -44,38 +45,43 @@ VALIDATION_CATALOG = {
     },
 
 
-    # "Table": {
+    "Table": {
 
-    #     "Exists": {
-    #         "description": "Validate that the expected database table exists.",
-    #         "required_inputs": ["TableName"],
-    #         "optional_inputs": []
-    #     },
+        "Exists": {
+            "description": "Validate that the expected database table exists.",
+            "required_inputs": ["TableName"],
+            "optional_inputs": [],
+            "validator": TableValidator.validate_exists
+        },
 
-    #     "Count": {
-    #         "description": "Validate the number of records in a database table, optionally against an expected count or another data source.",
-    #         "required_inputs": ["TableName"],
-    #         "optional_inputs": ["ExpectedCount", "CompareWith"]
-    #     },
+        "Count": {
+            "description": "Validate the number of records in a database table, optionally against an expected count or another data source.",
+            "required_inputs": ["TableName"],
+            "optional_inputs": ["ExpectedCount", "CompareWith"],
+            "validator": TableValidator.validate_count
+        },
 
-    #     "Schema": {
-    #         "description": "Validate table schema either against an explicitly defined schema or by comparing it with another data source such as a source file.",
-    #         "required_inputs": ["TableName"],
-    #         "optional_inputs": ["ExpectedSchema", "CompareWith"]
-    #     },
+        "Schema": {
+            "description": "Validate table schema either against an explicitly defined schema or by comparing it with another data source such as a source file.",
+            "required_inputs": ["TableName"],
+            "optional_inputs": ["ExpectedSchema", "CompareWith"],
+            "validator": TableValidator.validate_schema
+        },
 
-    #     "Null": {
-    #         "description": "Validate NULL values in specified table columns.",
-    #         "required_inputs": ["TableName", "ColumnName"],
-    #         "optional_inputs": ["ExpectedNullCount"]
-    #     },
+        "Null": {
+            "description": "Validate NULL values in specified table columns.",
+            "required_inputs": ["TableName", "ColumnNames"],
+            "optional_inputs": [],
+            "validator": TableValidator.validate_null
+        },
 
-    #     "Duplicate": {
-    #         "description": "Validate duplicate records or keys in a table.",
-    #         "required_inputs": ["TableName", "KeyColumns"],
-    #         "optional_inputs": ["ExpectedDuplicateCount"]
-    #     }
-    # },
+        "Duplicate": {
+            "description": "Validate duplicate records or keys in a table.",
+            "required_inputs": ["TableName", "ColumnNames"],
+            "optional_inputs": ["ExpectedDuplicateCount"],
+            "validator": TableValidator.validate_duplicate
+        }
+    },
 
 
     # "DataQuality": {

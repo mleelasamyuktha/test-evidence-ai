@@ -1,6 +1,6 @@
-from pathlib import Path
 from datetime import datetime
-from config.variables import reporting_dir
+
+from utilitycode.azure_blob import AzureBlobClient
 
 
 class ResultBuilder:
@@ -117,20 +117,17 @@ class ResultBuilder:
         return "\n".join(report)
 
     @staticmethod
-    def save_report(report, name, timestamp, output_path=reporting_dir):
+    def save_report(report, name, timestamp):
 
-        output_dir = Path(output_path)
+        blob_client = AzureBlobClient()
 
-        output_dir.mkdir(parents=True, exist_ok=True)
+        report_file_name = f"test_report_{name}_{timestamp}.md"
+        blob_path = f"ReportingFolder/{report_file_name}"
 
-        report_file = (output_dir / f"test_report_{name}_{timestamp}.md")
+        blob_client.upload_blob(
+            blob_path,
+            report.encode("utf-8"),
+            overwrite=True
+        )
 
-        with open(
-            report_file,
-            "w",
-            encoding="utf-8"
-        ) as file:
-
-            file.write(report)
-
-        return report_file
+        return blob_path
