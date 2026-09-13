@@ -14,23 +14,26 @@ VALIDATION_CATALOG = {
             "validator": FileValidator.validate_exists
         },
 
-        # "Header": {
-        #     "description": "Validate file headers either against explicitly expected headers or against another source such as a database table.",
-        #     "required_inputs": ["FilePath"],
-        #     "optional_inputs": ["ExpectedHeaders", "CompareWith"]
-        # },
+        "Header": {
+            "description": "Validate file headers either against explicitly expected headers or against another source such as a database table.",
+            "required_inputs": ["FilePath"],
+            "optional_inputs": ["ExpectedHeaders", "CompareWith"],
+            "validator": FileValidator.validate_header
+        },
 
-        # "Count": {
-        #     "description": "Validate the number of records in a file, optionally against an expected count or another data source.",
-        #     "required_inputs": ["FilePath"],
-        #     "optional_inputs": ["ExpectedCount", "CompareWith"]
-        # },
+        "Count": {
+            "description": "Validate the number of records in a file, optionally against an expected count or another data source.",
+            "required_inputs": ["FilePath"],
+            "optional_inputs": ["ExpectedCount", "CompareWith"],
+            "validator": FileValidator.validate_count
+        },
 
-        # "Format": {
-        #     "description": "Validate that a file has the expected format or extension.",
-        #     "required_inputs": ["FilePath"],
-        #     "optional_inputs": ["ExpectedFormat"]
-        # },
+        "Format": {
+            "description": "Validate that a file has the expected format or extension.",
+            "required_inputs": ["FilePath"],
+            "optional_inputs": ["ExpectedFormat"],
+            "validator": FileValidator.validate_format
+        },
 
         "Archive": {
             "description": "Validate that a processed file is moved or copied to the expected archive location.",
