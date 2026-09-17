@@ -36,6 +36,28 @@ class AzureSQLClient:
 
         return cursor.fetchall()
 
+    def get_table_schema(self, table_name, schema_name="dbo"):
+
+        query = """
+            SELECT
+                COLUMN_NAME,
+                DATA_TYPE
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = ?
+            AND TABLE_NAME = ?
+            ORDER BY ORDINAL_POSITION
+        """
+
+        rows = self.execute_query(query, (schema_name, table_name))
+
+        return [
+            {
+                "ColumnName": row[0],
+                "DataType": row[1]
+            }
+            for row in rows
+        ]
+
     def close(self):
 
         self.connection.close()

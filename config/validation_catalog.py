@@ -1,8 +1,10 @@
 # validation_catalog.py
 
+from validation_code.validators.data_quality_validator import DataQualityValidator
 from validation_code.validators.file_validator import FileValidator
 from validation_code.validators.table_validator import TableValidator
-
+from validation_code.validators.reconciliation_validator import ReconciliationValidator
+from validation_code.validators.pipeline_validator import PipelineValidator
 
 VALIDATION_CATALOG = {
 
@@ -84,57 +86,50 @@ VALIDATION_CATALOG = {
     },
 
 
-    # "DataQuality": {
+    "DataQuality": {
 
-    #     "QueryAssertion": {
-    #         "description": "Execute a validation query and verify that its result satisfies an expected condition. The expected result may be explicitly provided or derived from the validation rule.",
-    #         "required_inputs": ["Query"],
-    #         "optional_inputs": [
-    #             "Expected",
-    #             "Operator"
-    #         ]
-    #     }
-    # },
-
-
-    # "Reconciliation": {
-
-    #     "QueryComparison": {
-    #         "description": "Compare results from two queries using specified keys and comparison rules.",
-    #         "required_inputs": [
-    #             "SourceQuery",
-    #             "TargetQuery",
-    #             "ComparisonKeys"
-    #         ],
-    #         "optional_inputs": [
-    #             "Comparisons"
-    #         ]
-    #     }
-    # },
+        "QueryAssertion": {
+            "description": "Execute a validation query and verify that its result satisfies an expected condition. The expected result may be explicitly provided or derived from the validation rule.",
+            "required_inputs": ["Query"],
+            "optional_inputs": ["Expected","Operator"],
+            "requires_schema": True,
+            "validator": DataQualityValidator.validate_query_assertion
+        }
+    },
 
 
-    # "Pipeline": {
+    "Reconciliation": {
+        "QueryComparison": {
+            "description": "Compare source and target data. The source can be either a SQL query or a CSV file in Azure Blob Storage, and the target is a SQL query. Use SourceQuery for SQL-to-SQL comparison or SourceFile for CSV-to-SQL comparison.",
+            "required_inputs": [
+                "TargetQuery",
+                "ComparisonKeys"
+            ],
+            "optional_inputs": [
+                "SourceQuery",
+                "SourceFile",
+                "Comparisons"
+            ],
+            "requires_schema": True,
+            "validator": ReconciliationValidator.validate_query_comparison
+        }
+    },
 
-    #     "ExecutionStatus": {
-    #         "description": "Validate that a pipeline execution completed with the expected status.",
-    #         "required_inputs": ["PipelineName"],
-    #         "optional_inputs": ["ExpectedStatus"]
-    #     },
 
-    #     "Duration": {
-    #         "description": "Validate pipeline execution duration, optionally against an explicitly defined threshold.",
-    #         "required_inputs": ["PipelineName"],
-    #         "optional_inputs": ["MaxDuration"]
-    #     }
-    # },
+    "Pipeline": {
 
+        "ExecutionStatus": {
+            "description": "Validate that a pipeline execution completed with the expected status.",
+            "required_inputs": ["PipelineName"],
+            "optional_inputs": ["ExpectedStatus"],
+            "validator": PipelineValidator.validate_execution_status
+        },
 
-    # "Performance": {
-
-    #     "Duration": {
-    #         "description": "Validate that an operation completed within the expected performance threshold.",
-    #         "required_inputs": ["Operation"],
-    #         "optional_inputs": ["MaxDuration"]
-    #     }
-    # }
+        "Duration": {
+            "description": "Validate pipeline execution duration, optionally against an explicitly defined threshold.",
+            "required_inputs": ["PipelineName"],
+            "optional_inputs": ["MaxDuration"],
+            "validator": PipelineValidator.validate_duration
+        }
+    },
 }

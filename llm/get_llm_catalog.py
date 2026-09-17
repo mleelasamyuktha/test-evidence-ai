@@ -10,9 +10,9 @@ def get_llm_catalog():
             llm_catalog[category][validation_type] = {
                 "description": details["description"],
                 "required_inputs": details["required_inputs"],
-                "optional_inputs": details["optional_inputs"]
+                "optional_inputs": details["optional_inputs"],
+                "requires_schema": details.get("requires_schema", False)
             }
-
     return llm_catalog
 
 
