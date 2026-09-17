@@ -1,5 +1,6 @@
 from utilitycode.azure_blob import AzureBlobClient
 from utilitycode.logger import get_logger
+from config.variables import llm_output_folder
 
 
 logger = get_logger(__name__)
@@ -13,7 +14,7 @@ class LLMOutputReader:
     def get_json_files(self):
         logger.info("Reading LLM output files from Azure")
 
-        json_files = self.blob_client.list_json_blobs("LLMOutput/")
+        json_files = self.blob_client.list_json_blobs(f"{llm_output_folder}/")
 
         logger.info(
             "LLM output files found | count=%s",

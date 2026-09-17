@@ -1,33 +1,3 @@
-# import os
-
-# from azure.identity import ClientSecretCredential
-# from azure.storage.blob import BlobServiceClient
-
-
-# class AzureBlobClient:
-
-#     def __init__(self):
-
-#         storage_account_name = os.environ["AZURE_STORAGE_ACCOUNT_NAME"]
-#         container_name = os.environ["AZURE_STORAGE_CONTAINER_NAME"]
-
-#         account_url = f"https://{storage_account_name}.blob.core.windows.net"
-
-#         credential = ClientSecretCredential(
-#             tenant_id=os.environ["AZURE_TENANT_ID"],
-#             client_id=os.environ["AZURE_CLIENT_ID"],
-#             client_secret=os.environ["AZURE_CLIENT_SECRET"]
-#         )
-
-#         self.container_client = BlobServiceClient(
-#             account_url=account_url,
-#             credential=credential
-#         ).get_container_client(container_name)
-
-#     def list_blobs(self):
-
-#         return [blob.name for blob in self.container_client.list_blobs()]
-
 import json
 import os
 

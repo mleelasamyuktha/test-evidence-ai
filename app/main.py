@@ -1,19 +1,42 @@
 from datetime import datetime
+import argparse
 
 from models.test_case import TestCase
 from app.executor import TestExecutor
 from app.result_builder import ResultBuilder
 from app.llm_output_reader import LLMOutputReader
+from llm.testcase_generator import LLMTestGenerator
 from utilitycode.logger import get_logger
+from config.variables import document_folder
 
 
 logger = get_logger(__name__)
+
+def arg_parse():
+    parser = argparse.ArgumentParser(description="TestEvidence AI")
+    parser.add_argument(
+        "--document_path",
+        type=str,
+        required=True,
+        help="Path to the document for generating test scenarios"
+    )
+    return parser.parse_args()
 
 
 def main():
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     logger.info("TestEvidence AI execution started")
+
+    args = arg_parse()
+
+    generator = LLMTestGenerator(model="gpt-5.6-luna")
+
+    document_path = f"{document_folder}/{args.document_path}"
+
+    generated_file = generator.generate(document_path)
+
+    logger.info("LLM test scenarios generated | file=%s", generated_file)
 
     # Create Azure LLM output reader
     reader = LLMOutputReader()
