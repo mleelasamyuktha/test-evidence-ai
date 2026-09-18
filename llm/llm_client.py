@@ -14,7 +14,7 @@ class LLMClient:
         if not api_key:
             raise ValueError("OPENAI_API_KEY is not set.")
 
-        self.client = OpenAI(api_key=api_key)
+        self.client = OpenAI(api_key=api_key, base_url=os.getenv("AZURE_OPENAI_ENDPOINT"))
         self.model = model
 
     def generate(self, prompt):

@@ -1,6 +1,9 @@
 from datetime import datetime
+import os
+from pathlib import Path
 
 from utilitycode.azure_blob import AzureBlobClient
+from config.variables import azure_reporting_dir, local_reporting_dir
 
 
 class ResultBuilder:
@@ -118,16 +121,32 @@ class ResultBuilder:
 
     @staticmethod
     def save_report(report, name, timestamp):
-
-        blob_client = AzureBlobClient()
-
         report_file_name = f"test_report_{name}_{timestamp}.md"
-        blob_path = f"ReportingFolder/{report_file_name}"
 
-        blob_client.upload_blob(
-            blob_path,
-            report.encode("utf-8"),
-            overwrite=True
-        )
+        storage_type = os.getenv("STORAGE_TYPE", "local")
 
-        return blob_path
+        if storage_type == "azure":
+            blob_client = AzureBlobClient()
+            blob_path = f"{azure_reporting_dir}/{report_file_name}"
+
+            blob_client.upload_blob(blob_path, report.encode("utf-8"), overwrite=True)
+
+            return blob_path
+
+        elif storage_type == "local":
+            output_folder = Path(local_reporting_dir)
+            output_folder.mkdir(parents=True, exist_ok=True)
+
+            print(output_folder)
+            print(report_file_name)
+
+            file_path = output_folder / report_file_name
+
+            with open(file_path, "w", encoding="utf-8") as file:
+
+                file.write(report)
+
+            return str(file_path)
+
+        else:
+            raise ValueError(f"Invalid STORAGE_TYPE: {storage_type}")

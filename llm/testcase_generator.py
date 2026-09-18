@@ -1,12 +1,13 @@
 from email.mime import text
 import json
+import os
 
 from llm.document_reader import DocumentReader
 from llm.get_llm_catalog import get_llm_catalog
 from llm.prompt_builder import build_user_prompt
 from llm.llm_client import LLMClient
 from utilitycode.azure_blob import AzureBlobClient
-from config.variables import llm_output_folder
+from config.variables import azure_llm_output_folder, azure_document_folder, local_llm_output_folder, local_document_folder
 from utilitycode.azure_sql import AzureSQLClient
 
 
@@ -18,9 +19,31 @@ class LLMTestGenerator:
         self.blob_client = AzureBlobClient()
         self.sql_client = AzureSQLClient()
 
+        self.storage_type = os.getenv("STORAGE_TYPE", "local")
+
+        if self.storage_type == "azure":
+            self.blob_client = AzureBlobClient()
+            self.sql_client = AzureSQLClient()
+            self.llm_output_folder = azure_llm_output_folder
+            self.document_folder = azure_document_folder
+
+        elif self.storage_type == "local":
+            self.blob_client = None
+            self.sql_client = None
+
+            self.llm_output_folder = local_llm_output_folder
+            self.document_folder = local_document_folder
+
+        else:
+            raise ValueError(
+                f"Invalid STORAGE_TYPE: {self.storage_type}"
+            )
+
     def generate(self, document_path):
 
         document_text = self.document_reader.read_text(document_path)
+        # print("DOCUMENT TEXT LENGTH:", len(document_text))
+
 
         catalog = get_llm_catalog()
 
@@ -32,6 +55,7 @@ class LLMTestGenerator:
         )
 
         result = self.llm_client.generate(prompt)
+        # print(result)
 
         test_scenarios = json.loads(result)
 
@@ -65,19 +89,31 @@ class LLMTestGenerator:
 
         story_id = test_scenarios["StoryID"]
 
-        blob_path = f"{llm_output_folder}/{story_id}_TestScenarios.json"
+        blob_path = f"{self.llm_output_folder}/{story_id}_TestScenarios.json"
 
         json_data = json.dumps(
             test_scenarios,
             indent=4
         )
 
-        self.blob_client.upload_blob(
-            blob_path,
-            json_data.encode("utf-8"),
-            overwrite=True
-        )
+        if self.storage_type == "azure":
+            self.blob_client.upload_blob(
+                blob_path,
+                json_data.encode("utf-8"),
+                overwrite=True
+            )
+        else:
+            os.makedirs(self.llm_output_folder, exist_ok=True)
 
+            local_path = os.path.join(
+                self.llm_output_folder,
+                f"{story_id}_TestScenarios.json"
+            )
+
+            with open(local_path, "w", encoding="utf-8") as f:
+                f.write(json_data)
+
+            blob_path = local_path
         return blob_path
 
     def _extract_target_table(self, document_text):

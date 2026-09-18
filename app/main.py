@@ -1,5 +1,7 @@
 from datetime import datetime
 import argparse
+import os
+from pathlib import Path
 
 from models.test_case import TestCase
 from app.executor import TestExecutor
@@ -7,7 +9,7 @@ from app.result_builder import ResultBuilder
 from app.llm_output_reader import LLMOutputReader
 from llm.testcase_generator import LLMTestGenerator
 from utilitycode.logger import get_logger
-from config.variables import document_folder
+from config.variables import azure_document_folder, local_document_folder
 
 
 logger = get_logger(__name__)
@@ -32,7 +34,8 @@ def main():
 
     generator = LLMTestGenerator(model="gpt-5.6-luna")
 
-    document_path = f"{document_folder}/{args.document_path}"
+    # print(f"{generator.document_folder}/{args.document_path}")
+    document_path = f"{generator.document_folder}/{args.document_path}"
 
     generated_file = generator.generate(document_path)
 
@@ -102,9 +105,17 @@ def main():
         )
 
         # Save report
+        if os.getenv("STORAGE_TYPE") == "azure":
+            name = json_file.split("/")[-1].rsplit(".", 1)[0]
+        elif os.getenv("STORAGE_TYPE") == "local":
+            name = Path(json_file).stem
+        else:
+            raise ValueError(
+                f"Invalid STORAGE_TYPE: {os.getenv('STORAGE_TYPE')}"
+            )
         report_file = ResultBuilder.save_report(
             report,
-            name=json_file.split("/")[-1].rsplit(".", 1)[0],
+            name=name,
             timestamp=timestamp
         )
 

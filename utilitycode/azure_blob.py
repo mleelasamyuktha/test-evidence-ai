@@ -1,7 +1,7 @@
 import json
 import os
 
-from azure.identity import ClientSecretCredential
+from azure.identity import ClientSecretCredential, DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
 
 
@@ -13,12 +13,14 @@ class AzureBlobClient:
 
         account_url = f"https://{storage_account_name}.blob.core.windows.net"
 
-        credential = ClientSecretCredential(
-            tenant_id=os.environ["AZURE_TENANT_ID"],
-            client_id=os.environ["AZURE_CLIENT_ID"],
-            client_secret=os.environ["AZURE_CLIENT_SECRET"]
-        )
+        auth_type = os.getenv("AZURE_AUTH_TYPE", "default")
 
+        if auth_type == "client":
+            credential = ClientSecretCredential(tenant_id=os.environ["AZURE_TENANT_ID"], client_id=os.environ["AZURE_CLIENT_ID"], client_secret=os.environ["AZURE_CLIENT_SECRET"])
+        elif auth_type == "default":
+            credential = DefaultAzureCredential()
+        else:
+            raise ValueError(f"Invalid AZURE_AUTH_TYPE: {auth_type}")
         blob_service_client = BlobServiceClient(
             account_url=account_url,
             credential=credential
