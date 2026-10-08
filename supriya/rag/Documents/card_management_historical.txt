@@ -1,0 +1,15 @@
+Entity: card
+
+Historical Business Knowledge: Card Management
+
+Cards are associated with customer accounts.
+
+A card associated with an account must not continue to be treated as an active payment instrument when the associated account has been closed.
+
+Account closure may therefore require related card handling.
+
+The card management process should distinguish between cards associated with active accounts and cards associated with closed accounts.
+
+Card history should be retained for audit and operational purposes.
+
+The exact final card status following account closure depends on the applicable card management process and should not be assumed when the current requirement does not explicitly define it.

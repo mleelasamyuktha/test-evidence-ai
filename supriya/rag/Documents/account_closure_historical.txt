@@ -1,0 +1,18 @@
+Entity: customer, account
+Historical Business Knowledge: Customer Account Closure
+
+When a customer account is closed, the account enters a closed state and must no longer be treated as an active account.
+
+Account closure is a business event that can affect other products and activities associated with the customer account.
+
+A customer account may have cards associated with it. Cards associated with a closed account must not continue to operate as active cards for transactions against the closed account.
+
+A customer account may have deposits associated with it. Deposit products associated with a closed account require appropriate closure or settlement handling according to the applicable deposit business process.
+
+A customer account may have transaction history associated with it. Historical transactions remain part of the account history after account closure and must remain distinguishable from new transaction activity.
+
+Account closure must not remove historical transaction records.
+
+The account closure process should therefore be considered complete only when the account status reflects closure and the account is no longer treated as active.
+
+The expected handling of associated cards and deposits may depend on the applicable product and operational process.

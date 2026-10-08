@@ -1,0 +1,17 @@
+Entity: transaction
+
+Historical Business Knowledge: Transaction Processing
+
+Transactions are associated with customer accounts.
+
+Account closure does not remove historical transactions associated with the account.
+
+Historical transactions must remain distinguishable from new transaction activity.
+
+Transactions that were successfully completed before account closure remain part of the customer's transaction history.
+
+After an account has been closed, new transaction activity against that account may require additional business handling.
+
+Transaction history should be retained for audit and operational purposes.
+
+The exact expected behavior for new transaction attempts after account closure depends on the applicable transaction processing rules and should not be assumed when the current requirement does not define it.

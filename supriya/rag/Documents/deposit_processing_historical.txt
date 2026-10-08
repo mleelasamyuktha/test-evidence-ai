@@ -1,0 +1,19 @@
+Entity: deposit
+
+Historical Business Knowledge: Deposit Processing
+
+Deposits are associated with customer accounts.
+
+A customer account belongs to a customer.
+
+A deposit should belong to the same customer who owns the associated account.
+
+Deposit information should remain consistent with the associated account and customer relationship.
+
+When a customer account is closed, deposits associated with the account may require additional processing before the account closure process can be considered fully complete.
+
+Deposit processing may include settlement, closure, transfer, or other product-specific handling.
+
+The expected treatment depends on the type and state of the deposit product.
+
+Deposit records and their historical information should be retained for operational and audit purposes.

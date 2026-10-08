@@ -1,0 +1,26 @@
+Entity: customer, account, card, deposit, transaction
+Business Area: Customer Account Operations
+Scenario: End-to-End Customer Account Closure
+Business Context:
+Customer account closure is an end-to-end business process. Closing an account may require coordinated handling of products and activities associated with the account, including cards, deposits, and transaction processing.
+Business Requirement:
+The account closure process must ensure that the customer account and its related products are left in a consistent state after closure.
+Business Rules:
+valid customer is when customer id always exists.
+The customer account must reach the INACTIVE state only after the required account closure activities have been completed.
+All cards associated with the account must be prevented from being used for new transactions after the account is closed.
+New transactions must not be accepted for an inactive account.
+Previously completed transactions must remain available as historical information.
+Deposits associated with the account must be handled according to the applicable closure process.
+Historical relationships between the customer account and its associated cards, deposits, and transactions must remain available.
+The closure process must not unintentionally modify historical transaction or deposit information.
+If the closure process cannot complete a required activity, the account must not be represented as successfully closed.
+Historical Acceptance Criteria:
+A successfully completed closure leaves the customer account in the INACTIVE state.
+Associated cards cannot be used for new transactions after closure.
+New transactions cannot be created for an inactive account.
+Previously completed transactions remain available.
+Required deposit-related activities are completed as part of the account closure process.
+Historical relationships between the account and its related products remain available.
+Historical financial records are not unintentionally removed or modified during closure.
+An unsuccessful closure process does not result in the account being incorrectly represented as successfully closed.
